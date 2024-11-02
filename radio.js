@@ -1,7 +1,7 @@
-const songListUrl = '/songs.txt';
-const announcementFile = '/announce/announce.mp3';
+const songListUrl = '/web_radio/songs.txt';
+const announcementFile = '/web_radio/announce/announce.mp3';
 let musicFiles = [];
-let songCounter = 0;
+let songCounter = 0; 
 let audioPlayer = document.getElementById('audioPlayer');
 const startButton = document.getElementById('startRadio');
 
