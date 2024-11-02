@@ -1,17 +1,18 @@
-const songListUrl = '/songs.txt';  // Path to your song list text file
+const songListUrl = '/songs.txt';
 const announcementFile = '/announce/announce.mp3';
-let musicFiles = [];   // Array to hold the list of songs from the file
+let musicFiles = [];
 let songCounter = 0;
 let audioPlayer = document.getElementById('audioPlayer');
+const startButton = document.getElementById('startRadio');
 
-// Function to fetch and parse the songs list
+// Fetch and parse the song list
 async function fetchSongList() {
     try {
         const response = await fetch(songListUrl);
         const text = await response.text();
-        musicFiles = text.trim().split('\n'); // Split each line into an array entry
+        musicFiles = text.trim().split('\n');
         if (musicFiles.length > 0) {
-            playRandomSong();
+            startButton.disabled = false;  // Enable the start button if songs are available
         } else {
             console.error("No songs found in the list.");
         }
@@ -36,6 +37,12 @@ function playAnnouncement() {
     songCounter = 0;
 }
 
+// Event listener for the start button
+startButton.addEventListener('click', () => {
+    startButton.style.display = 'none';  // Hide the button after starting
+    playRandomSong();
+});
+
 // Event listener to play the next track when the current one ends
 audioPlayer.addEventListener('ended', () => {
     if (songCounter >= 3) {
@@ -45,5 +52,5 @@ audioPlayer.addEventListener('ended', () => {
     }
 });
 
-// Fetch the song list and start the radio
+// Fetch the song list on page load
 fetchSongList();
