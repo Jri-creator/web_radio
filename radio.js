@@ -3,9 +3,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let musicFiles = [];
     let songCounter = 0;
     let isPlaying = false;
-    const audioPlayer = new Audio();  // Initialize the audio player here
+
+    // Initialize audio player and control buttons
+    const audioPlayer = new Audio();
     const playPauseButton = document.getElementById('playPauseButton');
     const nextButton = document.getElementById('nextButton');
+
+    console.log("DOM fully loaded and parsed.");
+    console.log("audioPlayer initialized:", audioPlayer);
+
+    // Check if elements are initialized
+    if (!playPauseButton || !nextButton) {
+        console.error("Play or Next button not found.");
+        return;
+    }
+
+    playPauseButton.disabled = true;
+    nextButton.disabled = true;
 
     // Fetch and parse the song list
     async function fetchSongList() {
@@ -14,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const text = await response.text();
             musicFiles = text.trim().split('\n').map(file => `/web_radio/music/${file.trim()}`);
             
+            console.log("Fetched music files:", musicFiles);
+
             if (musicFiles.length > 0) {
                 playPauseButton.disabled = false;
                 nextButton.disabled = false;
@@ -32,10 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const randomIndex = Math.floor(Math.random() * musicFiles.length);
         const selectedSong = musicFiles[randomIndex];
         audioPlayer.src = selectedSong;
+
+        console.log("Playing song:", selectedSong);
+
         audioPlayer.play().catch(error => console.error("Error playing song:", error));
         songCounter++;
 
-        // Reset play/pause button state
         isPlaying = true;
         updatePlayPauseButton();
     }
@@ -82,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to play announcement and reset counter
     function playAnnouncement() {
         audioPlayer.src = '/web_radio/announce/announce.mp3';
+        console.log("Playing announcement");
         audioPlayer.play().catch(error => console.error("Error playing announcement:", error));
         songCounter = 0;
     }
