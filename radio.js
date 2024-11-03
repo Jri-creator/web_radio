@@ -26,8 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(songListUrl);
             const text = await response.text();
-            musicFiles = text.trim().split('\n').map(file => `/web_radio/music/${file.trim()}`);
-            
+
+            // Adjusted to not add the folder prefix twice
+            musicFiles = text.trim().split('\n').map(file => file.trim());
+
             console.log("Fetched music files:", musicFiles);
 
             if (musicFiles.length > 0) {
@@ -46,9 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (musicFiles.length === 0) return;
 
         const randomIndex = Math.floor(Math.random() * musicFiles.length);
-        const selectedSong = musicFiles[randomIndex];
-        audioPlayer.src = selectedSong;
+        const selectedSong = `/web_radio/music/${musicFiles[randomIndex]}`; // Add path here
 
+        audioPlayer.src = selectedSong;
         console.log("Playing song:", selectedSong);
 
         audioPlayer.play().catch(error => console.error("Error playing song:", error));
