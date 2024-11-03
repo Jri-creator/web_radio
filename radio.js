@@ -10,14 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextButton = document.getElementById('nextButton');
 
     console.log("DOM fully loaded and parsed.");
-    console.log("audioPlayer initialized:", audioPlayer);
 
-    // Check if elements are initialized
+    // Confirm elements are loaded
     if (!playPauseButton || !nextButton) {
         console.error("Play or Next button not found.");
         return;
     }
 
+    // Disable buttons until songs are loaded
     playPauseButton.disabled = true;
     nextButton.disabled = true;
 
@@ -27,11 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(songListUrl);
             const text = await response.text();
 
-            // Adjusted to not add the folder prefix twice
+            // Process song list and remove any unwanted spaces
             musicFiles = text.trim().split('\n').map(file => file.trim());
-
             console.log("Fetched music files:", musicFiles);
 
+            // Enable buttons if we have songs
             if (musicFiles.length > 0) {
                 playPauseButton.disabled = false;
                 nextButton.disabled = false;
@@ -48,10 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (musicFiles.length === 0) return;
 
         const randomIndex = Math.floor(Math.random() * musicFiles.length);
-        const selectedSong = `/web_radio/music/${musicFiles[randomIndex]}`; // Add path here
+        const selectedSong = musicFiles[randomIndex].startsWith('/web_radio/music/')
+            ? musicFiles[randomIndex]
+            : `/web_radio/music/${musicFiles[randomIndex]}`;
 
         audioPlayer.src = selectedSong;
-        console.log("Playing song:", selectedSong);
+        console.log("Attempting to play song:", selectedSong);
 
         audioPlayer.play().catch(error => console.error("Error playing song:", error));
         songCounter++;
